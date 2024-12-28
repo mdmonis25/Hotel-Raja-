@@ -1,5 +1,5 @@
  /* --------------------------------------------------
-  * © Copyright 2023 - Almaris by Designesia
+  * © Copyright 2023 - Simpact by Designesia
   * --------------------------------------------------*/
 (function($) {
 	'use strict';
