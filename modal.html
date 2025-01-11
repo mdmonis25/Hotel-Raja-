@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Modal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('https://source.unsplash.com/1920x1080/?hotel,room') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.3s, opacity 0.3s;
+    }
+
+    .modal {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transform: scale(0.9);
+      transition: transform 0.3s ease-out;
+    }
+
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group .guest-search {
+      display: flex;
+    }
+
+    .form-group .guest-search input {
+      flex: 1;
+      margin-right: 5px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .buttons .submit-btn {
+      background: #28a745;
+      color: white;
+    }
+
+    .buttons .cancel-btn {
+      background: #dc3545;
+      color: white;
+    }
+
+    .guest-list {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      max-height: 100px;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    .guest-list div {
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .guest-list div:hover {
+      background: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="openModal()">Open Booking Modal</button>
+
+  <div class="modal-overlay" id="bookingModal">
+    <div class="modal">
+      <h2>New Booking</h2>
+      <div class="form-group">
+        <label for="guest">Guest</label>
+        <div class="guest-search">
+          <input type="text" id="guest" placeholder="Enter guest name" oninput="fetchGuests()">
+          <button onclick="fetchGuests()">&#128269;</button>
+        </div>
+        <div class="guest-list" id="guestList"></div>
+      </div>
+      <div class="form-group">
+        <label for="roomType">Room Type</label>
+        <select id="roomType">
+          <option>Deluxe</option>
+          <option>AC Deluxe</option>
+          <option>Premium Deluxe</option>
+          <option>AC Premium Deluxe</option>
+          <option>Super Premium Deluxe</option>
+          <option>AC Super Premium Deluxe</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="rooms">Rooms</label>
+        <input type="number" id="rooms">
+      </div>
+      <div class="form-group">
+        <label for="extraPerson">Extra Person</label>
+        <input type="number" id="extraPerson">
+      </div>
+      <div class="form-group">
+        <label for="tariff">Tariff</label>
+        <input type="number" id="tariff">
+      </div>
+      <div class="form-group">
+        <label for="advance">Advance</label>
+        <input type="number" id="advance">
+      </div>
+      <div class="form-group">
+        <label for="bookingMode">Booking Mode</label>
+        <select id="bookingMode">
+          <option>Hotel</option>
+          <option>MakeMyTrip</option>
+          <option>Yatra</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="paymentMode">Payment Mode</label>
+        <select id="paymentMode">
+          <option>Cash</option>
+          <option>Card</option>
+          <option>Online</option>
+          <option>Smart Engine</option>
+        </select>
+      </div>
+      <div class="buttons">
+        <button class="submit-btn" onclick="submitBooking()">Submit</button>
+        <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById('bookingModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('bookingModal').classList.remove('active');
+    }
+
+    function fetchGuests() {
+      const guestList = document.getElementById('guestList');
+      guestList.innerHTML = '';
+      const mockGuests = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Bob Brown'];
+      mockGuests.forEach(guest => {
+        const div = document.createElement('div');
+        div.textContent = guest;
+        div.onclick = () => selectGuest(guest);
+        guestList.appendChild(div);
+      });
+    }
+
+    function selectGuest(guest) {
+      document.getElementById('guest').value = guest;
+      document.getElementById('guestList').innerHTML = '';
+    }
+
+    function submitBooking() {
+      const data = {
+        guest: document.getElementById('guest').value,
+        roomType: document.getElementById('roomType').value,
+        rooms: document.getElementById('rooms').value,
+        extraPerson: document.getElementById('extraPerson').value,
+        tariff: document.getElementById('tariff').value,
+        advance: document.getElementById('advance').value,
+        bookingMode: document.getElementById('bookingMode').value,
+        paymentMode: document.getElementById('paymentMode').value,
+      };
+
+      console.log('Booking Data:', data);
+
+      alert('Booking submitted successfully!');
+      closeModal();
+    }
+  </script>
+</body>
+</html>
